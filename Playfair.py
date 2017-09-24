@@ -31,19 +31,32 @@ def process_key(input):
 def encrypt(message,keymap):
     first=""
     second=""
+    
     ciphered=""
     for letter in range(1,len(message),2):
+        row1=-1
+        row2=-1
         for i in range(0,5):
             if message[letter-1] in key_matrix[i]:
+                row1 = i
                 first = key_matrix[i].index(message[letter-1])
-                ciphered += key_matrix[(i+1)%5][first]
+                
                 break
         for i in range(0,5):
             if message[letter] in key_matrix[i]:
+                row2 = i
                 second = key_matrix[i].index(message[letter])
-                ciphered += key_matrix[(i+1)%5][second]
+                
                 break
-
+        if row1 == row2 and row1 != -1 and row2 != -1 : 
+            ciphered += key_matrix[row1][(first+1)%5]
+            ciphered += key_matrix[row2][(second+1)%5]
+        elif row1 == second and row2 == first:
+            ciphered += key_matrix[row1][second]
+            ciphered += key_matrix[row2][first]
+        elif first == second:
+            ciphered += key_matrix[(row1+1)%5][first]
+            ciphered += key_matrix[(row2+1)%5][second]
     print(ciphered)
 if param == "enc":
     print(" Enter Key:",end="")
