@@ -64,6 +64,44 @@ def encrypt(message,key_matrix):
             ciphered += key_matrix[row1][second]
             ciphered += key_matrix[row2][first]
     print(ciphered)
+
+def decipher(message,key_matrix):
+    first=""
+    second=""
+    re_message ="" 
+    message = [i for i in message]
+    for i in range(len(message)):
+        if message[i]=='i':
+            message[i]='j'
+        re_message+=message[i]
+    print(re_message)
+    deciphered=""
+    for letter in range(1,len(message),2):
+        row1=-1
+        row2=-1
+       
+        for i in range(0,5):
+            if message[letter-1] in key_matrix[i]:
+                row1 = i
+                first = key_matrix[i].index(message[letter-1])
+                
+                break
+        for i in range(0,5):
+            if message[letter] in key_matrix[i]:
+                row2 = i
+                second = key_matrix[i].index(message[letter])
+                break
+        if row1 == row2 and row1 != -1 and row2 != -1 : 
+            deciphered += key_matrix[row1][(first-1)%5]
+            deciphered += key_matrix[row2][(second-1)%5]
+        elif first == second:
+            deciphered += key_matrix[(row1-1)%5][first]
+            deciphered += key_matrix[(row2-1)%5][second]
+        else:
+            deciphered += key_matrix[row1][second]
+            deciphered += key_matrix[row2][first]
+    print(deciphered)
+
 if param == "enc":
     print(" Enter Key:",end="")
     key = str(input())
@@ -84,3 +122,18 @@ if param == "enc":
     #print(key_matrix)
     cipher_text = encrypt(input,keymap)
    # print(key_matrix)
+if param == "dec":
+    print(" Enter cipherd text:",end="")
+    ciphered = str(input())
+    print(" Enter Key:",end="")
+    key = str(input())
+    key = "".join(key.split()) #removing whitespaces
+    unique = []
+    processed=""
+    [unique.append(i) for i in key if i not in unique] # removing duplicates
+    key = unique
+    processed = list(key)
+    processed = [ i for i in processed if i != 'j']
+    [processed.append(i) for i in alphabets if i not in processed] 
+    keymap = [[ processed[i+j*5] for i in range(0,5)] for j in range(0,5)]
+    plain_text = decipher(ciphered,keymap) 
