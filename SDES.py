@@ -1,5 +1,6 @@
 import sys
 
+param = sys.argv[1]
 # global definitions
 IP = [2,6,3,1,4,8,5,7]
 EP = [4,1,2,3,2,3,4,1]
@@ -90,34 +91,63 @@ def SDES(ip,output,key):
     #print(p1)
     for i in range(4):
         output[i] = p1[i] ^ p4[i]
-    #print(p1)
-    
+        #print(p1)
 
-print(" Enter Key:",end="")
-key = str(input())
-key = "".join(key.split())
-key = list(key)
-k1=[0]*8
-k2=[0]*8
-key_generate(key,k1,k2)
-print(" Enter Plain text:",end="")
-plaintext = list(input())
-right=[0]*4
-left =[0]*4
-ip=[0]*8
-for i in range(8):
-    ip[i]=plaintext[IP[i]-1]
-##print(ip)
-SDES(ip,right,k1)
-temp = ip[4:]+right
-print(right)
-ip = [str(i) for i in temp]
-#print(ip)
-SDES(ip,left,k2)
-print(left)
-ip1 = left + right
-print(ip1)
-enc=[0]*8
-for i in range(8):
-    enc[i]=ip1[IP1[i]-1]
-print(enc)
+if param == "enc":
+    print(" Enter Key:",end="")
+    key = str(input())
+    key = "".join(key.split())
+    key = list(key)
+    k1=[0]*8
+    k2=[0]*8
+    key_generate(key,k1,k2)
+    print(" Enter Plain text:",end="")
+    plaintext = list(input())
+    right=[0]*4
+    left =[0]*4
+    ip=[0]*8
+    for i in range(8):
+        ip[i]=plaintext[IP[i]-1]
+    ##print(ip)
+    SDES(ip,right,k1)
+    temp = ip[4:]+right
+    print(right)
+    ip = [str(i) for i in temp]
+    #print(ip)
+    SDES(ip,left,k2)
+    print(left)
+    ip1 = left + right
+    print(ip1)
+    enc=[0]*8
+    for i in range(8):
+        enc[i]=ip1[IP1[i]-1]
+    print(enc)
+if param == "dec":
+    print(" Enter Key:",end="")
+    key = str(input())
+    key = "".join(key.split())
+    key = list(key)
+    k1=[0]*8
+    k2=[0]*8
+    key_generate(key,k1,k2)
+    print(" Enter Cipher text:",end="")
+    ciphertext = list(input())
+    right=[0]*4
+    left =[0]*4
+    ip=[0]*8
+    for i in range(8):
+        ip[i]=ciphertext[IP[i]-1]
+    ##print(ip)
+    SDES(ip,right,k2)
+    temp = ip[4:]+right
+    print(right)
+    ip = [str(i) for i in temp]
+    #print(ip)
+    SDES(ip,left,k1)
+    print(left)
+    ip1 = left + right
+    print(ip1)
+    enc=[0]*8
+    for i in range(8):
+        enc[i]=ip1[IP1[i]-1]
+    print(enc)
