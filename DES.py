@@ -1,5 +1,5 @@
 import sys
-
+param = sys.argv[1]
 IP = [  58, 50, 42, 34, 26, 18, 10, 2,
         60, 52, 44, 36, 28, 20, 12, 4,
         62, 54, 46, 38, 30, 22, 14, 6,
@@ -156,64 +156,133 @@ for i in range(64):
     key[i] = int(k[i],10)
 #print(key)
 
+if param == "enc":
+        print(" Enter plain text in hexadecimal:",end="")
 
-print(" Enter plain text in hexadecimal:",end="")
+        pt = str(input())
+        pt = "".join(pt.split())
+        #print(len(pt))
+        plaintext = "".join( str("{0:04b}".format(int(pt[i],16))) for i in range(16))
+        #print(plaintext)
+        plaintext = [int(i) for i in plaintext]
+        #apply ip on plain text
+        ip=[0]*64
+        for i in range(64):
+                ip[i] = plaintext[IP[i]-1]
 
-pt = str(input())
-pt = "".join(pt.split())
-#print(len(pt))
-plaintext = "".join( str("{0:04b}".format(int(pt[i],16))) for i in range(16))
-#print(plaintext)
-plaintext = [int(i) for i in plaintext]
-#apply ip on plain text
-ip=[0]*64
-for i in range(64):
-        ip[i] = plaintext[IP[i]-1]
-
-R = ip[32:]
-L = ip[:32]
+        R = ip[32:]
+        L = ip[:32]
 
 
 
-pc1 = process_key(key)
-#print(pc1)
-c = pc1[:28]
-d = pc1[28:]
-next = l_shift(c,1)
-next += l_shift(d,1)
-keys[0] = process_key2(next)
+        pc1 = process_key(key)
+        #print(pc1)
+        c = pc1[:28]
+        d = pc1[28:]
+        next = l_shift(c,1)
+        next += l_shift(d,1)
+        keys[0] = process_key2(next)
 
-exchg = round_func(R,keys[0])
-#print(exchg)
-temp = list(R)
+        exchg = round_func(R,keys[0])
+        #print(exchg)
+        temp = list(R)
 
-for i in range(32):
-        R[i] = L[i] ^ exchg[i] 
-L = list(temp)
-#print(R,end="  ")
-#print(L)
+        for i in range(32):
+                R[i] = L[i] ^ exchg[i] 
+        L = list(temp)
+        #print(R,end="  ")
+        #print(L)
 
-#print(keys[0])
-for i in range(15):
-    c = next[:28]
-    d = next[28:]
-    next = l_shift(c,i+2)
-    next += l_shift(d,i+2)
-    keys[i+1] = process_key2(next)
-    exchg  =  round_func(R,keys[i+1])
-    temp = list(R)
-    for i in range(32):
-            R[i] = L[i] ^ exchg[i]
-    L = list(temp)
-    #print(R,end="  ")
-    #print(L)
-   #print(keys[i+1]) R+L
-temp = R+L
-ip1 = [0]*64
-for i in range(64):
-        ip1[i] = temp[IP1[i]-1]
-temp=""
-temp = "".join(str(i) for i in ip1)
-#print(temp)
-print(" Encrypted string is:",end="")
-print(hex(int(temp,2))[2:])
+        #print(keys[0])
+        for i in range(15):
+            c = next[:28]
+            d = next[28:]
+            next = l_shift(c,i+2)
+            next += l_shift(d,i+2)
+            keys[i+1] = process_key2(next)
+            print(keys[i+1])
+            exchg  =  round_func(R,keys[i+1])
+            temp = list(R)
+            for i in range(32):
+                    R[i] = L[i] ^ exchg[i]
+            L = list(temp)
+            #print(R,end="  ")
+            #print(L)
+           #print(keys[i+1]) R+L
+        temp = R+L
+        ip1 = [0]*64
+        for i in range(64):
+                ip1[i] = temp[IP1[i]-1]
+        temp=""
+        temp = "".join(str(i) for i in ip1)
+        #print(temp)
+        print(" Encrypted string is:",end="")
+        print(hex(int(temp,2))[2:])
+if param == "dec":
+        print(" Enter cipher text in hexadecimal:",end="")
+
+        pt = str(input())
+        pt = "".join(pt.split())
+        #print(len(pt))
+        plaintext = "".join( str("{0:04b}".format(int(pt[i],16))) for i in range(16))
+        #print(plaintext)
+        plaintext = [int(i) for i in plaintext]
+        #apply ip on plain text
+        ip=[0]*64
+        for i in range(64):
+                ip[i] = plaintext[IP[i]-1]
+
+        R = ip[32:]
+        L = ip[:32]
+
+
+
+        pc1 = process_key(key)
+        #print(pc1)
+        c = pc1[:28]
+        d = pc1[28:]
+        next = l_shift(c,1)
+        next += l_shift(d,1)
+        keys[0] = process_key2(next)
+        temp = list(next)
+        for i in range(1,16):
+                a = temp[:28]
+                b = temp[28:]
+                temp = l_shift(a,i+1)
+                temp += l_shift(b,i+1)
+                keys[i]=process_key2(temp)
+                print(keys[i])
+        exchg = round_func(R,keys[15])
+        #print(exchg)
+        temp = list(R)
+
+        for i in range(32):
+                R[i] = L[i] ^ exchg[i] 
+        L = list(temp)
+        #print(R,end="  ")
+        #print(L)
+
+        #print(keys[0])
+        for i in range(15):
+            c = next[:28]
+            d = next[28:]
+            next = l_shift(c,i+2)
+            next += l_shift(d,i+2)
+            #keys[i+1] = process_key2(next)
+            exchg  =  round_func(R,keys[15-(i+1)])
+            temp = list(R)
+            for i in range(32):
+                    R[i] = L[i] ^ exchg[i]
+            L = list(temp)
+            #print(R,end="  ")
+            #print(L)
+           #print(keys[i+1]) R+L
+        temp = R+L
+        ip1 = [0]*64
+        for i in range(64):
+                ip1[i] = temp[IP1[i]-1]
+        temp=""
+        temp = "".join(str(i) for i in ip1)
+        #print(temp)
+        print(" Decrypted string is:",end="")
+        print(hex(int(temp,2))[2:])
