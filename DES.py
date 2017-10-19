@@ -200,7 +200,7 @@ if param == "enc":
             next = l_shift(c,i+2)
             next += l_shift(d,i+2)
             keys[i+1] = process_key2(next)
-            print(keys[i+1])
+            #print(keys[i+1])
             exchg  =  round_func(R,keys[i+1])
             temp = list(R)
             for i in range(32):
@@ -251,7 +251,7 @@ if param == "dec":
                 temp = l_shift(a,i+1)
                 temp += l_shift(b,i+1)
                 keys[i]=process_key2(temp)
-                print(keys[i])
+                #print(keys[i])
         exchg = round_func(R,keys[15])
         #print(exchg)
         temp = list(R)
